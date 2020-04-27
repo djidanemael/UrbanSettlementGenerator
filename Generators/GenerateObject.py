@@ -25,3 +25,11 @@ def generateChandelier(world, y, x, z, size=1):
 def generateBed(world, y, x, z):
 	world.setEntity(y+1, x-1, z+1, (26,11), "bed")
 	world.setEntity(y+1, x-2, z+1, (26,3), "bed")
+
+def generateTable(world, y, x, z):
+	world.setValue(y+1, x, z, (85,0))
+	world.setValue(y+2, x, z, (72,0))
+
+def generateChestTorch(world, y, x, z):
+	world.setValue(y+1, x, z, (54,3))
+	world.setValue(y+2, x, z, (50,1))

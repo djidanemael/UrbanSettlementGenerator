@@ -46,6 +46,7 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	#generate door
 	matrix.setValue(h_min+2, x_min, z_min+1, (64,9))
 	matrix.setValue(h_min+1, x_min, z_min+1, (64,2))
+	crous.entranceLot = (h_min+1, x_min, z_min+1)
 
 	#generate window
 	matrix.setValue(h_min+2, x_min+4, z_min+1, (64,2))

@@ -8,12 +8,10 @@ def generatPath_StraightLine(matrix, x_p1, z_p1, x_p2, z_p2, height_map, pavemen
 	logging.info("Connecting {} and {}".format((x_p1, z_p1), (x_p2, z_p2)))
 	for x in twoway_range(x_p1, x_p2):
 		h = height_map[x][z_p1]
-		h = matrix.getMatrixY(h)
 		matrix.setValue(h,x,z_p1,pavementBlock)
-		
+
 	for z in twoway_range(z_p1, z_p2):
 		h = height_map[x_p2][z]
-		h = matrix.getMatrixY(h)
 		matrix.setValue(h,x_p2,z, pavementBlock)
 		matrix.setValue(h+1,x_p2,z, (0,0))
 
@@ -24,11 +22,14 @@ def getOrientation(x1, z1, x2, z2):
 	elif z1 > z2: return "N"
 	else: return None
 
+def twoway_range(start, stop):
+	return range(start, stop+1, 1) if (start <= stop) else range(start, stop-1, -1)
+
 def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)):
 	block = previous_block = path[0]
 	x = block[0]
 	z = block[1]
-	
+
 	def fillUnderneath(matrix, y, x, z, baseBlock):
 		if y < 0: return
 		block = matrix.getValue(y, x, z)
@@ -62,7 +63,7 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 		x = block[0]
 		z = block[1]
 		h = height_map[x][z]
-		h = matrix.getMatrixY(h)
+		#h = matrix.getMatrixY(h)
 
 		matrix.setValue(h,x,z,pavementBlock)
 		fillUnderneath(matrix, h-1, x, z, pavementBlock)
@@ -73,13 +74,13 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 
 		logging.info("Generating road at point {}, {}, {}".format(h, x, z))
 		logging.info("next_h: {}".format(next_h))
-		
+
 		# check if we are moving in the x axis (so to add a new pavement
 		# on the z-1, z+1 block)
 		if x != next_block[0]:
 
 			# if that side block is walkable
-			if z-1 >= 0 and height_map[x][z-1] != -1: 
+			if z-1 >= 0 and height_map[x][z-1] != -1:
 				matrix.setValue(h,x,z-1,pavementBlock)
 				# try to fill with earth underneath if it's empty
 				#logging.info("Filling underneath at height {}".format(h-1))
@@ -121,11 +122,9 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 		z = block[1]
 		#h = 100
 		h = height_map[x][z]
-		h = matrix.getMatrixY(h)
 
 		next_block = path[i+1]
 		next_h = height_map[next_block[0]][next_block[1]]
-		next_h = matrix.getMatrixY(next_h)
 
 		orientation = getOrientation(x, z, next_block[0], next_block[1])
 		if abs(h-next_h) > 1:

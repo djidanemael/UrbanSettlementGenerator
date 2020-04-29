@@ -19,6 +19,8 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 
 	crous.buildArea = utilityFunctions.dotdict({"y_min": h_min, "y_max": h_max, "x_min": x_min, "x_max": x_max, "z_min": z_min, "z_max": z_max})
 	
+	crous.orientation = getOrientation(matrix, crous.lotArea)
+
 	logging.info("Generating crous apt at area {}".format(crous.lotArea))
 	logging.info("Construction area {}".format(crous.buildArea))
 	
@@ -27,12 +29,11 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	floor = wall
 
 	#generate walls
-	for x in range(x_min, x_min+5):
-		for y in range(h_min, h_min+2):
+	for y in range(h_min+1, h_min+3):
+		for x in range(x_min, x_min+5):
 			matrix.setValue(y,x,z_min, wall)
 			matrix.setValue(y,x,z_min+3, wall)
-	for z in range(z_min, z_min+4):
-		for y in range(h_min, h_min+2):
+		for z in range(z_min, z_min+4):
 			matrix.setValue(y,x_min,z, wall)
 			matrix.setValue(y,x_min+4,z, wall)
 
@@ -41,15 +42,16 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 		for z in range(z_min, z_min+4):
 			matrix.setValue(h_min,x,z,floor)
 
-	crous.orientation = getOrientation(matrix, crous.lotArea)
-
 	#generate door
-	matrix.setValue(h_min+2, x_min, z_min+1, (64,9))
-	matrix.setValue(h_min+1, x_min, z_min+1, (64,2))
+	matrix.setValue(h_min+2, x_min, z_min+1, (64,8))
+	matrix.setValue(h_min+1, x_min, z_min+1, (64,0))
 	crous.entranceLot = (h_min+1, x_min, z_min+1)
+	for x in range(crous.lotArea.x_min, x_min):
+			matrix.setValue(h_min,x,z_min+1, (4,0))
+			matrix.setValue(h_min,x-1,z_min+2, (4,0))
 
 	#generate window
-	matrix.setValue(h_min+2, x_min+4, z_min+1, (64,2))
+	matrix.setValue(h_min+2, x_min+4, z_min+1, (20,0))
 
 	#generate ceiling
 	for x in range(x_min, x_min+5):
@@ -57,9 +59,9 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 		matrix.setValue(h_min+3,x,z_min+3, (109,3))
 		matrix.setValue(h_min+3,x,z_min+1, ceiling)
 		matrix.setValue(h_min+3,x,z_min+2, ceiling)
-	for z in range(z_min, z_min+4):
-		matrix.setValue(h_min+3,x_min,z, (109,1))
-		matrix.setValue(h_min+3,x_min+4,z, (109,0))
+	for z in range(z_min+1, z_min+3):
+		matrix.setValue(h_min+3,x_min,z, (109,0))
+		matrix.setValue(h_min+3,x_min+4,z, (109,1))
 
 	#generate interior
 	generateBed(matrix, h_min, x_min+4, z_min+1)

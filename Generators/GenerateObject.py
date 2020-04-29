@@ -31,5 +31,5 @@ def generateTable(world, y, x, z):
 	world.setValue(y+2, x, z, (72,0))
 
 def generateChestTorch(world, y, x, z):
-	world.setValue(y+1, x, z, (54,3))
+	world.setValue(y+1, x, z, (54,2))
 	world.setValue(y+2, x, z, (50,1))

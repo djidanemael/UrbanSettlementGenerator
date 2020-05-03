@@ -102,9 +102,9 @@ def perform(level, box, options):
 
 	# ==== GENERATING NEIGHBOURHOODS ====
 
-	minimum_h = 10
-	minimum_w = 16
-	mininum_d = 16
+	minimum_h = 3
+	minimum_w = 7
+	mininum_d = 6
 
 	iterate = 100
 	maximum_tries = 50
@@ -162,7 +162,7 @@ def perform(level, box, options):
 			logging.info("\t{}".format(p))
 
 	for partition in final_partitioning:
-		house = generateCrous(world, partition, height_map)
+		house = generateHouse(world, partition, height_map)
 		all_buildings.append(house)
 
 	# ==== GENERATE PATH MAP  ====
@@ -227,7 +227,10 @@ def generateHouse(matrix, p, height_map):
 			line += str(height_map[x][z])+" "
 		logging.info(line)
 
-	house = GenerateHouse.generateHouse(matrix, h, p[1],p[2],p[3], p[4], p[5])
+	if RNG.random() < 0.5:
+		house = GenerateHouse.generateHouse(matrix, h, p[1],p[2],p[3], p[4], p[5])
+	else:
+		house = GenerateCrous.generateCrous(matrix, h, p[1], p[2], p[3], p[4], p[5])
 
 	utilityFunctions.updateHeightMap(height_map, p[2]+1, p[3]-1, p[4]+1, p[5]-1, -1)
 
@@ -258,7 +261,7 @@ def generateCrous(matrix, p, height_map):
 			line += str(height_map[x][z])+" "
 		logging.info(line)
 
-	crous = GenerateCrous.generateCrous(matrix, h, p[1],p[2],p[3], p[4], p[5])
+	crous = GenerateCrous.generateCrous(matrix, h, p[1], p[2], p[3], p[4], p[5])
 
 	utilityFunctions.updateHeightMap(height_map, p[2]+1, p[3]-1, p[4]+1, p[5]-1, -1)
 

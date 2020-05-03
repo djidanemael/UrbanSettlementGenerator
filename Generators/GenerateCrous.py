@@ -15,7 +15,7 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 
 	utilityFunctions.cleanProperty(matrix, h_min+1, h_max, x_min, x_max, z_min, z_max)
 
-	(h_min, h_max, x_min, x_max, z_min, z_max) = getHouseAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max)
+	(h_min, h_max, x_min, x_max, z_min, z_max) = getCrousAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max)
 
 	crous.buildArea = utilityFunctions.dotdict({"y_min": h_min, "y_max": h_max, "x_min": x_min, "x_max": x_max, "z_min": z_min, "z_max": z_max})
 	
@@ -29,26 +29,26 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	floor = wall
 
 	#generate walls
-	for y in range(h_min+1, h_min+3):
-		for x in range(x_min, x_min+5):
+	for y in range(h_min+1, h_max):
+		for x in range(x_min, x_max+1):
 			matrix.setValue(y,x,z_min, wall)
 			matrix.setValue(y,x,z_min+3, wall)
-		for z in range(z_min, z_min+4):
+		for z in range(z_min, z_max):
 			matrix.setValue(y,x_min,z, wall)
 			matrix.setValue(y,x_min+4,z, wall)
 
 	#generate floor
-	for x in range(x_min, x_min+5):
-		for z in range(z_min, z_min+4):
+	for x in range(x_min, x_max+1):
+		for z in range(z_min, z_max):
 			matrix.setValue(h_min,x,z,floor)
 
 	#generate door
 	matrix.setValue(h_min+2, x_min, z_min+1, (64,8))
 	matrix.setValue(h_min+1, x_min, z_min+1, (64,0))
-	crous.entranceLot = (h_min+1, x_min, z_min+1)
+	crous.entranceLot = (h_min+1, crous.lotArea.x_min, z_min+1)
 	for x in range(crous.lotArea.x_min, x_min):
 			matrix.setValue(h_min,x,z_min+1, (4,0))
-			matrix.setValue(h_min,x-1,z_min+2, (4,0))
+			matrix.setValue(h_min,x,z_min+2, (4,0))
 
 	#generate window
 	matrix.setValue(h_min+2, x_min+4, z_min+1, (20,0))
@@ -70,22 +70,22 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 
 	return crous
 
-def getHouseAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):
-	house_size_x = RNG.randint(10, 14)
-	if x_max-x_min > house_size_x:
+def getCrousAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):
+	crous_size_x = 5
+	if x_max-x_min > crous_size_x:
 		x_mid = x_min + (x_max-x_min)/2
-		x_min = x_mid - house_size_x/2
-		x_max = x_mid + house_size_x/2
+		x_min = x_mid - crous_size_x/2
+		x_max = x_mid + crous_size_x/2
 
-	house_size_z = RNG.randint(10, 14)
-	if z_max-z_min > house_size_z:
+	crous_size_z = 4
+	if z_max-z_min > crous_size_z:
 		z_mid = z_min + (z_max-z_min)/2
-		z_min = z_mid - house_size_z/2
-		z_max = z_mid + house_size_z/2
+		z_min = z_mid - crous_size_z/2
+		z_max = z_mid + crous_size_z/2
 
-	house_size_h = (house_size_x+house_size_z)/2
-	if h_max-h_min > 15 or h_max-h_min > house_size_h: 
-		h_max = h_min+ ((house_size_x+house_size_z)/2)
+	crous_size_h = 3
+	if h_max-h_min > 15 or h_max-h_min > crous_size_h: 
+		h_max = h_min+ ((crous_size_x+crous_size_z)/2)
 
 	return (h_min, h_max, x_min, x_max, z_min, z_max)
 

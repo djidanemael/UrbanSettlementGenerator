@@ -28,6 +28,20 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	ceiling = wall if ceiling == None else ceiling
 	floor = wall
 
+	generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
+	crous.entranceLot = (h_min+1, crous.lotArea.x_min, z_min+1)
+	for x in range(crous.lotArea.x_min, x_min):
+			matrix.setValue(h_min,x,z_min+1, (4,0))
+			matrix.setValue(h_min,x,z_min+2, (4,0))
+	
+	if RNG.random() < 0.5:
+		generateRoom(h_min+3, h_max+3, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
+		if RNG.random() < 0.5:
+			generateRoom(h_min+6, h_max+6, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
+
+	return crous
+
+def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling):
 	#generate walls
 	for y in range(h_min+1, h_max):
 		for x in range(x_min, x_max+1):
@@ -45,10 +59,6 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	#generate door
 	matrix.setValue(h_min+2, x_min, z_min+1, (64,8))
 	matrix.setValue(h_min+1, x_min, z_min+1, (64,0))
-	crous.entranceLot = (h_min+1, crous.lotArea.x_min, z_min+1)
-	for x in range(crous.lotArea.x_min, x_min):
-			matrix.setValue(h_min,x,z_min+1, (4,0))
-			matrix.setValue(h_min,x,z_min+2, (4,0))
 
 	#generate window
 	matrix.setValue(h_min+2, x_min+4, z_min+1, (20,0))
@@ -67,8 +77,6 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	generateBed(matrix, h_min, x_min+4, z_min+1)
 	generateTable(matrix, h_min, x_min+3, z_min+1)
 	generateChestTorch(matrix, h_min, x_min+1, z_min+2)
-
-	return crous
 
 def getCrousAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):
 	crous_size_x = 5

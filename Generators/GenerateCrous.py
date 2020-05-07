@@ -24,7 +24,9 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	logging.info("Generating crous apt at area {}".format(crous.lotArea))
 	logging.info("Construction area {}".format(crous.buildArea))
 	
-	wall = (5, RNG.randint(0,5))
+	wood = RNG.randint(0,5)
+	wall = (5, wood)
+	fence = fenceWood(wood)
 	ceiling = wall if ceiling == None else ceiling
 	floor = wall
 
@@ -34,12 +36,28 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 			matrix.setValue(h_min,x,z_min+1, (4,0))
 			matrix.setValue(h_min,x,z_min+2, (4,0))
 	
-	if RNG.random() < 0.5:
-		generateRoom(h_min+3, h_max+3, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
-		if RNG.random() < 0.5:
-			generateRoom(h_min+6, h_max+6, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
+	for i in range(3, 100, 3):
+		if RNG.random() < 0.3:
+			break
+		j = 1 + i - 3
+		generateRoom(h_min+i, h_max+i, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
+		generateLadder(h_min+j, x_min-1, z_min+1, matrix, fence)
 
 	return crous
+
+def fenceWood(w):
+	if w == 0:
+		return (85,0)
+	elif w == 1:
+		return (188,0)
+	elif w == 2:
+		return (189,0)
+	elif w == 3:
+		return (190,0)
+	elif w == 4:
+		return (192,0)
+	elif w == 5:
+		return (191,0)
 
 def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling):
 	#generate walls
@@ -77,6 +95,17 @@ def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wall, floor, 
 	generateBed(matrix, h_min, x_min+4, z_min+1)
 	generateTable(matrix, h_min, x_min+3, z_min+1)
 	generateChestTorch(matrix, h_min, x_min+1, z_min+2)
+
+def generateLadder(h_min, x, z, matrix, fence, ladder = (65,4), path = (4,0)):
+	for h in range(h_min, h_min+3):
+		matrix.setValue(h,x,z+1, ladder)
+		matrix.setValue(h,x,z+2, fence)
+	matrix.setValue(h_min+3,x,z+2, fence)
+
+	matrix.setValue(h_min+2,x,z, path)
+	matrix.setValue(h_min+3,x,z-1, fence)
+	matrix.setValue(h_min+3,x-1,z-1, fence)
+	matrix.setValue(h_min+3,x-1,z, fence)
 
 def getCrousAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):
 	crous_size_x = 5

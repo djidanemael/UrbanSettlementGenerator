@@ -7,7 +7,7 @@ import utilityFunctions as utilityFunctions
 from GenerateCarpet import generateCarpet
 from GenerateObject import *
 
-def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = None):
+def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, material = None, ceiling = None):
 
 	crous = utilityFunctions.dotdict()
 	crous.type = "crous"
@@ -24,8 +24,8 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	logging.info("Generating crous apt at area {}".format(crous.lotArea))
 	logging.info("Construction area {}".format(crous.buildArea))
 	
-	wood = RNG.randint(0,5)
-	wall = (5, wood)
+	wood = RNG.randint(0,5) if material == None else material
+	wall = (5, wood) if material == None else material
 	fence = fenceWood(wood)
 	ceiling = wall if ceiling == None else ceiling
 	floor = wall
@@ -71,9 +71,7 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	return crous
 
 def fenceWood(w):
-	if w == 0:
-		return (85,0)
-	elif w == 1:
+	if w == 1:
 		return (188,0)
 	elif w == 2:
 		return (189,0)
@@ -83,6 +81,8 @@ def fenceWood(w):
 		return (192,0)
 	elif w == 5:
 		return (191,0)
+	else:
+		return (85,0)
 
 def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling):
 	#generate walls
@@ -121,7 +121,7 @@ def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wall, floor, 
 	generateTable(matrix, h_min, x_min+3, z_min+1)
 	generateChestTorch(matrix, h_min, x_min+1, z_min+2)
 
-def generateLadder(h_min, x, z, matrix, fence, ladder = (65,4), path = (4,0)):
+def generateLadder(h_min, x, z, matrix, fence, ladder = (65,4), path = (44,11)):
 	for h in range(h_min, h_min+3):
 		matrix.setValue(h,x,z+1, ladder)
 		matrix.setValue(h,x,z+2, fence)

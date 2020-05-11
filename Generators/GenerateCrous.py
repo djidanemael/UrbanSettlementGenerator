@@ -30,18 +30,43 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	ceiling = wall if ceiling == None else ceiling
 	floor = wall
 
-	generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
-	crous.entranceLot = (h_min+1, crous.lotArea.x_min, z_min+1)
-	for x in range(crous.lotArea.x_min, x_min):
-			matrix.setValue(h_min,x,z_min+1, (4,0))
-			matrix.setValue(h_min,x,z_min+2, (4,0))
+	if RNG.random() < 0.5:
+		generateRoom(h_min, h_max, x_min, x_max, z_min-2, z_max-2, matrix, wall, floor, ceiling)
+		generateRoom(h_min, h_max, x_min, x_max, z_min+1, z_max+1, matrix, wall, floor, ceiling)
+		crous.entranceLot = (h_min+1, crous.lotArea.x_min, z_min)
+		for x in range(crous.lotArea.x_min, x_min):
+			matrix.setValue(h_min, x, z_min, (4,0))
+			matrix.setValue(h_min, x, z_min+1, (4,0))
+		for z in range(z_min-1, z_min+3):
+			matrix.setValue(h_min, x_min-1, z, (4,0))
+			matrix.setValue(h_min, x_min-2, z, (4,0))
+		
+		for i in range(3, 100, 3):
+			if RNG.random() < 0.3:
+				matrix.setValue(h_min+i, x_min, z_min+1, (109,0))
+				for x in range(x_min+1, x_max):
+					matrix.setValue(h_min+i, x, z_min+1, (43,5))
+				matrix.setValue(h_min+i, x_min+4, z_min+1, (109,1))
+				break
+			j = 1 + i - 3
+			generateRoom(h_min+i, h_max+i, x_min, x_max, z_min-2, z_max-2, matrix, wall, floor, ceiling)
+			generateLadder(h_min+j, x_min-1, z_min+1-2, matrix, fence)
+			generateRoom(h_min+i, h_max+i, x_min, x_max, z_min+1, z_max+1, matrix, wall, floor, ceiling)
+			generateLadder(h_min+j, x_min-1, z_min+1+1, matrix, fence)
 	
-	for i in range(3, 100, 3):
-		if RNG.random() < 0.3:
-			break
-		j = 1 + i - 3
-		generateRoom(h_min+i, h_max+i, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
-		generateLadder(h_min+j, x_min-1, z_min+1, matrix, fence)
+	else:
+		generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
+		crous.entranceLot = (h_min+1, crous.lotArea.x_min, z_min+1)
+		for x in range(crous.lotArea.x_min, x_min):
+			matrix.setValue(h_min, x, z_min+1, (4,0))
+			matrix.setValue(h_min, x, z_min+2, (4,0))
+	
+		for i in range(3, 100, 3):
+			if RNG.random() < 0.3:
+				break
+			j = 1 + i - 3
+			generateRoom(h_min+i, h_max+i, x_min, x_max, z_min, z_max, matrix, wall, floor, ceiling)
+			generateLadder(h_min+j, x_min-1, z_min+1, matrix, fence)
 
 	return crous
 
@@ -63,16 +88,16 @@ def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wall, floor, 
 	#generate walls
 	for y in range(h_min+1, h_max):
 		for x in range(x_min, x_max+1):
-			matrix.setValue(y,x,z_min, wall)
-			matrix.setValue(y,x,z_min+3, wall)
+			matrix.setValue(y, x, z_min, wall)
+			matrix.setValue(y, x, z_min+3, wall)
 		for z in range(z_min, z_max):
-			matrix.setValue(y,x_min,z, wall)
-			matrix.setValue(y,x_min+4,z, wall)
+			matrix.setValue(y, x_min, z, wall)
+			matrix.setValue(y, x_min+4, z, wall)
 
 	#generate floor
 	for x in range(x_min, x_max+1):
 		for z in range(z_min, z_max):
-			matrix.setValue(h_min,x,z,floor)
+			matrix.setValue(h_min, x, z, floor)
 
 	#generate door
 	matrix.setValue(h_min+2, x_min, z_min+1, (64,8))
@@ -101,11 +126,7 @@ def generateLadder(h_min, x, z, matrix, fence, ladder = (65,4), path = (4,0)):
 		matrix.setValue(h,x,z+1, ladder)
 		matrix.setValue(h,x,z+2, fence)
 	matrix.setValue(h_min+3,x,z+2, fence)
-
 	matrix.setValue(h_min+2,x,z, path)
-	matrix.setValue(h_min+3,x,z-1, fence)
-	matrix.setValue(h_min+3,x-1,z-1, fence)
-	matrix.setValue(h_min+3,x-1,z, fence)
 
 def getCrousAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):
 	crous_size_x = 5

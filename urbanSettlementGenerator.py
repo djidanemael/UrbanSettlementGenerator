@@ -162,7 +162,7 @@ def perform(level, box, options):
 			logging.info("\t{}".format(p))
 
 	for partition in final_partitioning:
-		house = generateHouse(world, partition, height_map)
+		house = generateCrous(world, partition, height_map)
 		all_buildings.append(house)
 
 	# ==== GENERATE PATH MAP  ====

@@ -1,0 +1,13 @@
+May 11th week:
+- Reworked the lego houses generation
+- Fixed ladder generation on front
+- Now houses can have different sizes in width or depth
+- Each "column" of rooms can have different heights
+- Added different types of rooms like bedroom, living room, bathroom... (they have the same interior at this time but it is going to change)
+
+For the next week:
+- Change the ladder system so every room, especially the ones not in front, can be reached or find another solution
+- Add different orientations
+- Maybe improve already existing buildings
+- Maybe add more types of rooms or different sizes of rooms
+- And more

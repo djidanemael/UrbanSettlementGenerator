@@ -24,7 +24,6 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 	logging.info("Construction area {}".format(house.buildArea))
 
 	height = 3
-	bed_floor = 0
 	floors_rooms = [0] * ((h_max-h_min) // height)
 
 	for z in range(z_min, z_max, room_size):
@@ -33,13 +32,11 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 				wood = (5, RNG.randint(0,5))
 				generateRoom(f, f+height, x, x+room_size, z, z+room_size, matrix, wood, (floors_rooms[(f-h_min)//height] == 0))
 				floors_rooms[(f-h_min)//height] += 1
-				if RNG.random() < 0.3 if f < bed_floor or floors_rooms[(f-h_min)//height] == 1 else 0.4:
-					ceiling = wood if ceiling == None else ceiling
-					generateRoof(f+height, x, x+room_size, z, z+room_size, matrix, ceiling)
-					if floors_rooms[(f-h_min)//height] == 1: bed_floor = f
+				if RNG.random() < 0.3:
+					generateRoof(f+height, x, x+room_size, z, z+room_size, matrix, wood)
 					break
 		for f in range(h_min, h_max, height):
-			if matrix.getValue(f+height, x_min, z) != (0, 0):
+			if matrix.getValue(f+height+1, x_min, z+1) != (0, 0):
 				generateLadder(f+1, f+height, x_min-1, z, matrix)
 	
 	house.entranceLot = (h_min+1, house.lotArea.x_min, z_min+1)

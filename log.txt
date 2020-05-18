@@ -8,6 +8,8 @@ May 11th week:
 For the next week:
 - Change the ladder system so every room, especially the ones not in front, can be reached or find another solution
 - Add different orientations
+- Add others building materials
+- Fix rooftops coinciding
 - Maybe improve already existing buildings
 - Maybe add more types of rooms or different sizes of rooms
 - And more

@@ -39,10 +39,13 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 			if matrix.getValue(f+height+1, x_min, z+1) != (0, 0):
 				generateLadder(f+1, f+height, x_min-1, z, matrix)
 	
-	house.entranceLot = (h_min+1, house.lotArea.x_min, z_min+1)
+	z_mid = z_min + (z_max-z_min) // 2
+	house.entranceLot = (h_min+1, house.lotArea.x_min, z_mid)
+
 	for x in range(house.lotArea.x_min, x_min):
-			matrix.setValue(h_min, x, z_min, (4,0))
-			matrix.setValue(h_min, x, z_min+1, (4,0))
+		matrix.setValue(h_min, x, z_mid-1, (4,0))
+		matrix.setValue(h_min, x, z_mid, (4,0))
+		matrix.setValue(h_min, x, z_mid+1, (4,0))
 	for z in range(z_min+1, z_max):
 		matrix.setValue(h_min, x_min-1, z, (4,0))
 		matrix.setValue(h_min, x_min-2, z, (4,0))

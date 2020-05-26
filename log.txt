@@ -5,12 +5,14 @@ May 11th week:
 - Each "column" of rooms can have different heights
 - Added different types of rooms like bedroom, living room, bathroom... (they have the same interior at this time but it is going to change)
 
+May 18th week:
+- Added different orientations for rooms with the possibility to have the same one for every room
+- Changed the ladder system so ladders reach the lowest height possible
+- Fixed rooftops coinciding
+
 For the next week:
-- Change the ladder system so every room, especially the ones not in front, can be reached or find another solution
-- Add different house orientations
-- Try different orientations for each room in the same house
-- Add others building materials
-- Fix rooftops coinciding
+- Find a fix to non-reachable rooms
+- Add other building materials
 - Maybe improve already existing buildings
 - Maybe add more types of rooms or different sizes of rooms
 - And more

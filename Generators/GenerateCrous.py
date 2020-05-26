@@ -4,7 +4,6 @@ import RNG
 import logging
 from pymclevel import alphaMaterials, BoundingBox
 import utilityFunctions as utilityFunctions
-from GenerateCarpet import generateCarpet
 from GenerateObject import *
 
 def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = None):
@@ -25,19 +24,20 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 
 	height = 3
 	floors_rooms = [0] * ((h_max-h_min) // height)
+	ori = orientation()
+	single_ori = RNG.random() < 0.5
 
 	for z in range(z_min, z_max, room_size):
 		for x in range(x_min, x_max, room_size):
 			for f in range(h_min, h_max, height):
+				ori = ori if single_ori else orientation()
 				wood = (5, RNG.randint(0,5))
-				generateRoom(f, f+height, x, x+room_size, z, z+room_size, matrix, wood, (floors_rooms[(f-h_min)//height] == 0))
+				generateRoom(f, f+height, x, x+room_size, z, z+room_size, matrix, wood, (floors_rooms[(f-h_min)//height] == 0), ori)
+				generateLadder(f, x, z, matrix, ori, h_min)
 				floors_rooms[(f-h_min)//height] += 1
 				if RNG.random() < 0.3:
 					generateRoof(f+height, x, x+room_size, z, z+room_size, matrix, wood)
 					break
-		for f in range(h_min, h_max, height):
-			if matrix.getValue(f+height+1, x_min, z+1) != (0, 0):
-				generateLadder(f+1, f+height, x_min-1, z, matrix)
 	
 	z_mid = z_min + (z_max-z_min) // 2
 	house.entranceLot = (h_min+1, house.lotArea.x_min, z_mid)
@@ -54,7 +54,7 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 
 	return house
 
-def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wood, bedroom):
+def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wood, bedroom, orientation):
 	#generate walls
 	for y in range(h_min+1, h_max):
 		for x in range(x_min, x_max+1):
@@ -70,11 +70,28 @@ def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wood, bedroom
 			matrix.setValue(h_min, x, z, wood)
 
 	#generate door
-	matrix.setValue(h_min+2, x_min, z_min+1, (64,8))
-	matrix.setValue(h_min+1, x_min, z_min+1, (64,0))
+	if orientation == "n":
+		matrix.setValue(h_min+2, x_min+1, z_max, (64,8))
+		matrix.setValue(h_min+1, x_min+1, z_max, (64,3))
+	elif orientation == "e":
+		matrix.setValue(h_min+2, x_min, z_min+1, (64,8))
+		matrix.setValue(h_min+1, x_min, z_min+1, (64,0))
+	elif orientation == "s":
+		matrix.setValue(h_min+2, x_max-1, z_min, (64,8))
+		matrix.setValue(h_min+1, x_max-1, z_min, (64,1))
+	elif orientation == "w":
+		matrix.setValue(h_min+2, x_max, z_max-1, (64,8))
+		matrix.setValue(h_min+1, x_max, z_max-1, (64,2))
 
 	#generate window
-	matrix.setValue(h_min+2, x_min, z_min+2, (20,0))
+	if orientation == "n":
+		matrix.setValue(h_min+2, x_min+2, z_max, (20,0))
+	elif orientation == "e":
+		matrix.setValue(h_min+2, x_min, z_min+2, (20,0))
+	elif orientation == "s":
+		matrix.setValue(h_min+2, x_min+2, z_min, (20,0))
+	elif orientation == "w":
+		matrix.setValue(h_min+2, x_max, z_min+2, (20,0))
 
 	rooms = [generateBedRoom, generateBathRoom, generateKitchenRoom, generateLivingRoom, generateDiningRoom, generateLibraryRoom]
 	room = rooms[0] if bedroom else rooms[RNG.randint(1, len(rooms))]
@@ -82,17 +99,45 @@ def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wood, bedroom
 
 
 def generateRoof(h, x_min, x_max, z_min, z_max, matrix, ceiling):
-	for x in range(x_min, x_max+1):
-		matrix.setValue(h,x,z_min, (109,2))
-		matrix.setValue(h,x,z_max, (109,3))
+	#43,5
+	for x in range(x_min+1, x_max):
+		#left
+		if matrix.getValue(h,x,z_min) == (0, 0):
+			matrix.setValue(h,x,z_min, (109,2))
+		elif matrix.getValue(h,x,z_min) == (109,3):
+			matrix.setValue(h,x,z_min, (43,5))
+
+		#right
+		if matrix.getValue(h,x,z_max) == (0, 0):
+			matrix.setValue(h,x,z_max, (109,3))
+		elif matrix.getValue(h,x,z_max) == (109,2):
+			matrix.setValue(h,x,z_max, (43,5))
+
+	for z in range(z_min+1, z_max):
+		#front
+		if matrix.getValue(h,x_min,z) == (0, 0):
+			matrix.setValue(h,x_min,z, (109,0))
+		elif matrix.getValue(h,x_min,z) == (109,1):
+			matrix.setValue(h,x_min,z, (43,5))
+
+		#back
+		if matrix.getValue(h,x_max,z) == (0, 0):
+			matrix.setValue(h,x_max,z, (109,1))
+		elif matrix.getValue(h,x_max,z) == (109,0):
+			matrix.setValue(h,x,x_max,z, (43,5))
+	
+	#corners
+	if matrix.getValue(h,x_min,z_min) == (0, 0): matrix.setValue(h,x_min,z_min, (44,5))
+	if matrix.getValue(h,x_min,z_max) == (0, 0): matrix.setValue(h,x_min,z_max, (44,5))
+	if matrix.getValue(h,x_max,z_min) == (0, 0): matrix.setValue(h,x_max,z_min, (44,5))
+	if matrix.getValue(h,x_max,z_max) == (0, 0): matrix.setValue(h,x_max,z_max, (44,5))
+
+	#middle
+	for x in range(x_min+1, x_max):
 		for z in range(z_min+1, z_max):
 			matrix.setValue(h,x,z, ceiling)
 			matrix.setValue(h,x,z, ceiling)
 			matrix.setValue(h,x,z, ceiling)
-	for z in range(z_min, z_max+1):
-		matrix.setValue(h,x_min,z, (109,0))
-		matrix.setValue(h,x_min+4,z, (109,1))
-	
 
 def possible_rooms(x_min, x_max, z_min, z_max, room_size):
 	return ((x_max-x_min) // room_size, (z_max-z_min) // room_size)
@@ -144,11 +189,83 @@ def generateLibraryRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix):
 	generateTable(matrix, h_min, x_max-1, z_max-2)
 	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
 
-def generateLadder(h_min, h_max, x, z, matrix, ladder = (65,4), path = (44,11)):
-	for h in range(h_min, h_max+1):
-		matrix.setValue(h,x,z+3, ladder)
-	matrix.setValue(h_min+2,x,z+1, path)
-	matrix.setValue(h_min+2,x,z+2, path)
+def generateLadder(h, x, z, matrix, orientation, h_min, ladder = (65,4), path = (44,11)):
+	f = h
+	if orientation == "n":
+		if matrix.getValue(f+2,x+1,z+4) == (64,8) and matrix.getValue(f,x+1,z+5) == (0,0):
+			matrix.setValue(f,x+1,z+5, path)
+			matrix.setValue(f,x+2,z+5, path)
+		while matrix.getValue(f,x+3,z+5) == (0,0):
+			matrix.setValue(f,x+3,z+5, (65,3))
+			if matrix.getValue(f,x+1,z+4) == (64,8) and matrix.getValue(f-2,x+1,z+5) == (0,0):
+				matrix.setValue(f-2,x+1,z+5, path)
+				matrix.setValue(f-2,x+2,z+5, path)
+			f -= 1
+#		if f > h_min:
+#			generateOnlyLadder(f-1, x, z+4, matrix, orientation, h_min)
+	elif orientation == "e":
+		if matrix.getValue(f+2,x,z+1) == (64,8) and matrix.getValue(f,x-1,z+1) == (0,0):
+			matrix.setValue(f,x-1,z+1, path)
+			matrix.setValue(f,x-1,z+2, path)
+		while matrix.getValue(f,x-1,z+3) == (0,0):
+			matrix.setValue(f,x-1,z+3, (65,4))
+			if matrix.getValue(f,x,z+1) == (64,8) and matrix.getValue(f-2,x-1,z+1) == (0,0):
+				matrix.setValue(f-2,x-1,z+1, path)
+				matrix.setValue(f-2,x-1,z+2, path)
+			f -= 1
+#		if f > h_min:
+#			generateOnlyLadder(f-1, x-4, z, matrix, orientation, h_min)
+	elif orientation == "s":
+		if matrix.getValue(f+2,x+3,z) == (64,8) and matrix.getValue(f,x+3,z-1) == (0,0):
+			matrix.setValue(f,x+3,z-1, path)
+			matrix.setValue(f,x+2,z-1, path)
+		while matrix.getValue(f,x+1,z-1) == (0,0):
+			matrix.setValue(f,x+1,z-1, (65,2))
+			if matrix.getValue(f,x+3,z) == (64,8) and matrix.getValue(f-2,x+3,z-1) == (0,0):
+				matrix.setValue(f-2,x+3,z-1, path)
+				matrix.setValue(f-2,x+2,z-1, path)
+			f -= 1
+#		if f > h_min:
+#			generateOnlyLadder(f-1, x, z-4, matrix, orientation, h_min)
+	elif orientation == "w":
+		if matrix.getValue(f+2,x+4,z+3) == (64,8) and matrix.getValue(f,x+5,z+3) == (0,0):
+			matrix.setValue(f,x+5,z+2, path)
+			matrix.setValue(f,x+5,z+3, path)
+		while matrix.getValue(f,x+5,z+1) == (0,0):
+			matrix.setValue(f,x+5,z+1, (65,5))
+			if matrix.getValue(f,x+4,z+3) == (64,8) and matrix.getValue(f-2,x+5,z+3) == (0,0):
+				matrix.setValue(f-2,x+5,z+2, path)
+				matrix.setValue(f-2,x+5,z+3, path)
+			f -= 1
+#		if f > h_min:
+#			generateOnlyLadder(f-1, x+4, z, matrix, orientation, h_min)
+
+def generateOnlyLadder(h, x, z, matrix, orientation, h_min, ladder = (65,4), path = (44,11)):
+	f = h
+	if orientation == "n":
+		while matrix.getValue(f,x+3,z+5) == (0,0):
+			matrix.setValue(f,x+3,z+5, (65,3))
+			f -= 1
+		if f > h_min:
+			generateOnlyLadder(f-1, x, z+4, matrix, orientation, h_min)
+	elif orientation == "e":
+		while matrix.getValue(f,x-1,z+3) == (0,0):
+			matrix.setValue(f,x-1,z+3, (65,4))
+			f -= 1
+		if f > h_min:
+			generateOnlyLadder(f-1, x-4, z, matrix, orientation, h_min)
+	elif orientation == "s":
+		while matrix.getValue(f,x+1,z-1) == (0,0):
+			matrix.setValue(f,x+1,z-1, (65,2))
+			f -= 1
+		if f > h_min:
+			generateOnlyLadder(f-1, x, z-4, matrix, orientation, h_min)
+	elif orientation == "w":
+		while matrix.getValue(f,x+5,z+1) == (0,0):
+			matrix.setValue(f,x+5,z+1, (65,5))
+			f -= 1
+		if f > h_min:
+			generateOnlyLadder(f-1, x+4, z, matrix, orientation, h_min)
 
 def getHouseAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):
 	house_size_x = x_max - x_min - 2
@@ -189,6 +306,11 @@ def getBuildArea(h_min, h_max, x_min, x_max, z_min, z_max, room_size):
 	h_max = h_min + crous_size_h * 20
 
 	return (h_min, h_max, x_min, x_max, z_min, z_max)	
+
+def orientation():
+	oris = ["n", "e", "s", "w"]
+	ori = RNG.randint(0, 4)
+	return oris[ori]
 
 def getOrientation(matrix, area):
 	x_mid = matrix.width/2

@@ -8,10 +8,12 @@ May 11th week:
 May 18th week:
 - Added different orientations for rooms with the possibility to have the same one for every room
 - Changed the ladder system so ladders reach the lowest height possible
+- Tried to generate ladders in front of lower rooms to access higher ones without success (unwanted ladders appear in the air)
 - Fixed rooftops coinciding
 
 For the next week:
-- Find a fix to non-reachable rooms
+- Find a fix to unwanted ladders CHECKED (but missing some on west side due to room being generated over)
+- Fix doors replaced by walls during generation CHECKED (maybe add window on opposite wall if a door is found)
 - Add other building materials
 - Maybe improve already existing buildings
 - Maybe add more types of rooms or different sizes of rooms

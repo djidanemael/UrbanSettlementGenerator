@@ -13,6 +13,7 @@ May 18th week:
 
 For the next week:
 - Find a fix to unwanted ladders CHECKED (but missing some on west side due to room being generated over)
+- Change ladders generation so it happens after all rooms are generated to fix indoor ladders
 - Fix doors replaced by walls during generation CHECKED (maybe add window on opposite wall if a door is found)
 - Add other building materials
 - Maybe improve already existing buildings

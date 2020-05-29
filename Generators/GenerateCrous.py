@@ -99,7 +99,7 @@ def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wood, bedroom
 
 	rooms = [generateBedRoom, generateBathRoom, generateKitchenRoom, generateLivingRoom, generateDiningRoom, generateLibraryRoom]
 	room = rooms[0] if bedroom else rooms[RNG.randint(1, len(rooms))]
-	return room(h_min, h_max, x_min, x_max, z_min, z_max, matrix)
+	return room(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation)
 
 
 def generateRoof(h, x_min, x_max, z_min, z_max, matrix, ceiling):
@@ -163,32 +163,45 @@ def fenceWood(w):
 	else:
 		return (85,0)
 
-def generateBedRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix):
+def generateBedRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
+	if orientation == "N":
+		generateBed(matrix, h_min, x_max, z_max-2)
+		generateTable(matrix, h_min, x_max-1, z_max-2)
+		generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+	elif orientation == "E":
+		generateBed(matrix, h_min, x_max, z_max-2)
+		generateTable(matrix, h_min, x_max-1, z_max-2)
+		generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+	elif orientation == "S":
+		generateBed(matrix, h_min, x_max, z_max-2)
+		generateTable(matrix, h_min, x_max-1, z_max-2)
+		generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+	elif orientation == "W":
+		generateBed(matrix, h_min, x_max, z_max-2)
+		generateTable(matrix, h_min, x_max-1, z_max-2)
+		generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+
+def generateBathRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
 	generateBed(matrix, h_min, x_max, z_max-2)
 	generateTable(matrix, h_min, x_max-1, z_max-2)
 	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
 
-def generateBathRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix):
+def generateKitchenRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
 	generateBed(matrix, h_min, x_max, z_max-2)
 	generateTable(matrix, h_min, x_max-1, z_max-2)
 	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
 
-def generateKitchenRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix):
+def generateLivingRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
 	generateBed(matrix, h_min, x_max, z_max-2)
 	generateTable(matrix, h_min, x_max-1, z_max-2)
 	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
 
-def generateLivingRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix):
+def generateDiningRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
 	generateBed(matrix, h_min, x_max, z_max-2)
 	generateTable(matrix, h_min, x_max-1, z_max-2)
 	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
 
-def generateDiningRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix):
-	generateBed(matrix, h_min, x_max, z_max-2)
-	generateTable(matrix, h_min, x_max-1, z_max-2)
-	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
-
-def generateLibraryRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix):
+def generateLibraryRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
 	generateBed(matrix, h_min, x_max, z_max-2)
 	generateTable(matrix, h_min, x_max-1, z_max-2)
 	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
@@ -203,8 +216,8 @@ def generateLadder(h, x, z, matrix, orientation, h_min, nopath = False, ladder =
 				matrix.setValue(f,x+1,z+5, path)
 				matrix.setValue(f,x+2,z+5, path)
 			f -= 1
-		if f > h_min and not areSameBlocks(matrix.getValue(f,x+3,z+5), (65,3)):
-			generateLadder(f-1, x, z+4, matrix, orientation, h_min, nopath = True)
+		if f > h_min and not areSameBlocks(matrix.getValue(f,x+3,z+5), (65,3)) and not areSameBlocks(matrix.getValue(f,x+3,z+5), path):
+			tryLadder(f-1, x, z+4, matrix, orientation, h_min)
 	elif orientation == "E":
 		while areSameBlocks(matrix.getValue(f,x-1,z+3), (0,0)):
 			matrix.setValue(f,x-1,z+3, (65,4))
@@ -212,8 +225,8 @@ def generateLadder(h, x, z, matrix, orientation, h_min, nopath = False, ladder =
 				matrix.setValue(f,x-1,z+1, path)
 				matrix.setValue(f,x-1,z+2, path)
 			f -= 1
-		if f > h_min and not areSameBlocks(matrix.getValue(f,x-1,z+3), (65,4)):
-			generateLadder(f-1, x-4, z, matrix, orientation, h_min, nopath = True)
+		if f > h_min and not areSameBlocks(matrix.getValue(f,x-1,z+3), (65,4)) and not areSameBlocks(matrix.getValue(f,x-1,z+3), path):
+			tryLadder(f-1, x-4, z, matrix, orientation, h_min)
 	elif orientation == "S":
 		while areSameBlocks(matrix.getValue(f,x+1,z-1), (0,0)):
 			matrix.setValue(f,x+1,z-1, (65,2))
@@ -221,8 +234,8 @@ def generateLadder(h, x, z, matrix, orientation, h_min, nopath = False, ladder =
 				matrix.setValue(f,x+3,z-1, path)
 				matrix.setValue(f,x+2,z-1, path)
 			f -= 1
-		if f > h_min and not areSameBlocks(matrix.getValue(f,x+1,z-1), (65,2)):
-			generateLadder(f-1, x, z-4, matrix, orientation, h_min, nopath = True)
+		if f > h_min and not areSameBlocks(matrix.getValue(f,x+1,z-1), (65,2)) and not areSameBlocks(matrix.getValue(f,x+1,z-1), path):
+			tryLadder(f-1, x, z-4, matrix, orientation, h_min)
 	elif orientation == "W":
 		while areSameBlocks(matrix.getValue(f,x+5,z+1), (0,0)):
 			matrix.setValue(f,x+5,z+1, (65,5))
@@ -230,8 +243,37 @@ def generateLadder(h, x, z, matrix, orientation, h_min, nopath = False, ladder =
 				matrix.setValue(f,x+5,z+2, path)
 				matrix.setValue(f,x+5,z+3, path)
 			f -= 1
-		if f > h_min and not areSameBlocks(matrix.getValue(f,x+5,z+1), (65,5)):
-			generateLadder(f-1, x+4, z, matrix, orientation, h_min, nopath = True)
+		if f > h_min and not areSameBlocks(matrix.getValue(f,x+5,z+1), (65,5)) and not areSameBlocks(matrix.getValue(f,x+5,z+1), path):
+			tryLadder(f-1, x+4, z, matrix, orientation, h_min)
+
+def tryLadder(f, x, z, matrix, orientation, h_min):
+	print("try" + orientation)
+	oris = getOrientations(orientation)
+	for ori in oris:
+		if ori == "N" and areSameBlocks(matrix.getValue(f,x+3,z+5), (0,0)):
+			generateLadder(f, x, z, matrix, orientation, h_min, nopath = True)
+			return
+		elif ori == "E" and areSameBlocks(matrix.getValue(f,x-1,z+3), (0,0)):
+			generateLadder(f, x, z, matrix, orientation, h_min, nopath = True)
+			return
+		elif ori == "S" and areSameBlocks(matrix.getValue(f,x+1,z-1), (0,0)):
+			generateLadder(f, x, z, matrix, orientation, h_min, nopath = True)
+			return
+		elif ori == "W" and areSameBlocks(matrix.getValue(f,x+5,z+1), (0,0)):
+			generateLadder(f, x, z, matrix, orientation, h_min, nopath = True)
+			return
+
+def getOrientations(orientation):
+	oris = [orientation]
+	if orientation == "N":
+		oris = ["N", "E", "S", "W"]
+	elif orientation == "E":
+		oris = ["E", "S", "W", "N"]
+	elif orientation == "S":
+		oris = ["S", "W", "N", "E"]
+	elif orientation == "W":
+		oris = ["W", "N", "E", "S"]
+	return oris
 
 def areSameBlocks(block1, block2):
 	if not isinstance(block1, tuple):
@@ -239,8 +281,8 @@ def areSameBlocks(block1, block2):
 	return block1[0] == block2[0] and block1[1] == block2[1]
 
 def areSameBlocksList(block1, blocklist):
-	for i in range(0, len(blocklist)):
-		if areSameBlocks(block1, blocklist[i]): return True
+	for block2 in blocklist:
+		if areSameBlocks(block1, block2): return True
 	return False
 
 def getHouseAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):

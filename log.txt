@@ -11,11 +11,17 @@ May 18th week:
 - Tried to generate ladders in front of lower rooms to access higher ones without success (unwanted ladders appear in the air)
 - Fixed rooftops coinciding
 
+May 25th week:
+- Fixed unwanted ladders
+- Changed ladders generation so it happens after all rooms are generated to fix indoor ladders
+- Separated ladders and door paths generations to fix missing these ones
+- Fixed doors replaced by walls during generation
+- Room orientation now checked before generation to avoid two rooms facing each other
+- Changed path generation so it is made on the side with the highest number of doors on the ground
+
 For the next week:
-- Find a fix to unwanted ladders CHECKED (but missing some on west side due to room being generated over)
-- Change ladders generation so it happens after all rooms are generated to fix indoor ladders
-- Fix doors replaced by walls during generation CHECKED (maybe add window on opposite wall if a door is found)
-- Add other building materials
-- Maybe improve already existing buildings
-- Maybe add more types of rooms or different sizes of rooms
+- Fix missing ladders (see last screenshot)
+- Fix path appearing in the sky and not on the ground
+- Add other types of rooms and interior following orientation
+- Maybe improve already existing buildings by applying lego logic to appartments
 - And more

@@ -89,16 +89,30 @@ def generateRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, wood, bedroom
 		matrix.setValue(h_min+1, x_max, z_max-1, (64,2))
 
 	#generate window
-	if orientation == "N":
+	if orientation == "N" and areSameBlocks(matrix.getValue(h_min+2, x_min+2, z_max), (0,0)):
 		matrix.setValue(h_min+2, x_min+2, z_max, (20,0))
-	elif orientation == "E":
+	elif orientation == "E" and areSameBlocks(matrix.getValue(h_min+2, x_min, z_min+2), (0,0)):
 		matrix.setValue(h_min+2, x_min, z_min+2, (20,0))
-	elif orientation == "S":
+	elif orientation == "S" and areSameBlocks(matrix.getValue(h_min+2, x_min+2, z_min), (0,0)):
 		matrix.setValue(h_min+2, x_min+2, z_min, (20,0))
-	elif orientation == "W":
+	elif orientation == "W" and areSameBlocks(matrix.getValue(h_min+2, x_max, z_min+2), (0,0)):
 		matrix.setValue(h_min+2, x_max, z_min+2, (20,0))
 
-	rooms = [generateBedRoom, generateBathRoom, generateKitchenRoom, generateLivingRoom, generateDiningRoom, generateLibraryRoom]
+	#generate torches
+	if orientation == "N":
+		generateTorch(matrix, h_min, x_min+2, z_min+1, "S")
+		generateTorch(matrix, h_min, x_min+1, z_min+2, "E")
+	elif orientation == "E":
+		generateTorch(matrix, h_min, x_max-1, z_min+2, "W")
+		generateTorch(matrix, h_min, x_min+2, z_min+1, "S")
+	elif orientation == "S":
+		generateTorch(matrix, h_min, x_min+2, z_max-1, "N")
+		generateTorch(matrix, h_min, x_max-1, z_min+2, "W")
+	elif orientation == "W":
+		generateTorch(matrix, h_min, x_min+1, z_min+2, "E")
+		generateTorch(matrix, h_min, x_min+2, z_max-1, "N")
+
+	rooms = [generateBedRoom, generateKitchenRoom, generateLivingRoom, generateDiningRoom, generateLibraryRoom]
 	room = rooms[0] if bedroom else rooms[RNG.randint(1, len(rooms))]
 	return room(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation)
 
@@ -209,46 +223,88 @@ def fenceWood(w):
 
 def generateBedRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
 	if orientation == "N":
-		generateBed(matrix, h_min, x_max, z_max-2)
-		generateTable(matrix, h_min, x_max-1, z_max-2)
-		generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+		generateBedNew(matrix, h_min, x_max-1, z_max-1, orientation)
+		generateChest(matrix, h_min, x_min+2, z_max-1, orientation)
 	elif orientation == "E":
-		generateBed(matrix, h_min, x_max, z_max-2)
-		generateTable(matrix, h_min, x_max-1, z_max-2)
-		generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+		generateBedNew(matrix, h_min, x_min+1, z_max-1, orientation)
+		generateChest(matrix, h_min, x_min+1, z_min+2, orientation)
 	elif orientation == "S":
-		generateBed(matrix, h_min, x_max, z_max-2)
-		generateTable(matrix, h_min, x_max-1, z_max-2)
-		generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+		generateBedNew(matrix, h_min, x_min+1, z_min+1, orientation)
+		generateChest(matrix, h_min, x_min+2, z_min+1, orientation)
 	elif orientation == "W":
-		generateBed(matrix, h_min, x_max, z_max-2)
-		generateTable(matrix, h_min, x_max-1, z_max-2)
-		generateChestTorch(matrix, h_min, x_min+1, z_max-1)
-
-def generateBathRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
-	generateBed(matrix, h_min, x_max, z_max-2)
-	generateTable(matrix, h_min, x_max-1, z_max-2)
-	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+		generateBedNew(matrix, h_min, x_max-1, z_min+1, orientation)
+		generateChest(matrix, h_min, x_max-1, z_min+2, orientation)
 
 def generateKitchenRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
-	generateBed(matrix, h_min, x_max, z_max-2)
-	generateTable(matrix, h_min, x_max-1, z_max-2)
-	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+	if orientation == "N":
+		matrix.setValue(h_min+1, x_max-1, z_min+2, (58,0))
+		matrix.setValue(h_min+1, x_max-1, z_max-1, (61,4))
+		matrix.setValue(h_min+2, x_max-1, z_max-1, (167,3))
+	elif orientation == "E":
+		matrix.setValue(h_min+1, x_min+2, z_max-1, (58,0))
+		matrix.setValue(h_min+1, x_min+1, z_max-1, (61,2))
+		matrix.setValue(h_min+2, x_min+1, z_max-1, (167,1))
+	elif orientation == "S":
+		matrix.setValue(h_min+1, x_min+1, z_min+2, (58,0))
+		matrix.setValue(h_min+1, x_min+1, z_min+1, (61,5))
+		matrix.setValue(h_min+2, x_min+1, z_min+1, (167,2))
+	elif orientation == "W":
+		matrix.setValue(h_min+1, x_min+2, z_min+1, (58,0))
+		matrix.setValue(h_min+1, x_max-1, z_min+1, (61,3))
+		matrix.setValue(h_min+2, x_max-1, z_min+1, (167,0))
 
 def generateLivingRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
-	generateBed(matrix, h_min, x_max, z_max-2)
-	generateTable(matrix, h_min, x_max-1, z_max-2)
-	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+	if orientation == "N":
+		matrix.setValue(h_min+1, x_max-1, z_min+2, (53,0))
+		matrix.setValue(h_min+1, x_max-1, z_max-1, (53,0))
+		matrix.setValue(h_min+1, x_min+2, z_max-1, (53,2))
+	elif orientation == "E":
+		matrix.setValue(h_min+1, x_min+2, z_max-1, (53,2))
+		matrix.setValue(h_min+1, x_min+1, z_max-1, (53,2))
+		matrix.setValue(h_min+1, x_min+1, z_min+2, (53,1))
+	elif orientation == "S":
+		matrix.setValue(h_min+1, x_min+1, z_min+2, (53,1))
+		matrix.setValue(h_min+1, x_min+1, z_min+1, (53,1))
+		matrix.setValue(h_min+1, x_min+2, z_min+1, (53,3))
+	elif orientation == "W":
+		matrix.setValue(h_min+1, x_min+2, z_min+1, (53,3))
+		matrix.setValue(h_min+1, x_max-1, z_min+1, (53,3))
+		matrix.setValue(h_min+1, x_max-1, z_min+2, (53,0))
 
 def generateDiningRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
-	generateBed(matrix, h_min, x_max, z_max-2)
-	generateTable(matrix, h_min, x_max-1, z_max-2)
-	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+	generateTable(matrix, h_min, x_min+2, z_min+2)
+	if orientation == "N":
+		matrix.setValue(h_min+1, x_max-1, z_min+2, (53,0))
+		matrix.setValue(h_min+1, x_min+2, z_max-1, (53,2))
+	elif orientation == "E":
+		matrix.setValue(h_min+1, x_min+2, z_max-1, (53,2))
+		matrix.setValue(h_min+1, x_min+1, z_min+2, (53,1))
+	elif orientation == "S":
+		matrix.setValue(h_min+1, x_min+1, z_min+2, (53,1))
+		matrix.setValue(h_min+1, x_min+2, z_min+1, (53,3))
+	elif orientation == "W":
+		matrix.setValue(h_min+1, x_min+2, z_min+1, (53,3))
+		matrix.setValue(h_min+1, x_max-1, z_min+2, (53,0))
 
 def generateLibraryRoom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
-	generateBed(matrix, h_min, x_max, z_max-2)
-	generateTable(matrix, h_min, x_max-1, z_max-2)
-	generateChestTorch(matrix, h_min, x_min+1, z_max-1)
+	# 0 est    1 ouest    2 sud    3 nord
+	generateTable(matrix, h_min, x_min+2, z_min+2)
+	if orientation == "N":
+		matrix.setValue(h_min+1, x_max-1, z_max-1, (47,0))
+		matrix.setValue(h_min+2, x_max-1, z_max-1, (47,0))
+		matrix.setValue(h_min+1, x_max-1, z_min+2, (53,0))
+	elif orientation == "E":
+		matrix.setValue(h_min+1, x_min+1, z_max-1, (47,0))
+		matrix.setValue(h_min+2, x_min+1, z_max-1, (47,0))
+		matrix.setValue(h_min+1, x_min+2, z_max-1, (53,2))
+	elif orientation == "S":
+		matrix.setValue(h_min+1, x_min+1, z_min+1, (47,0))
+		matrix.setValue(h_min+2, x_min+1, z_min+1, (47,0))
+		matrix.setValue(h_min+1, x_min+1, z_min+2, (53,1))
+	elif orientation == "W":
+		matrix.setValue(h_min+1, x_max-1, z_min+1, (47,0))
+		matrix.setValue(h_min+2, x_max-1, z_min+1, (47,0))
+		matrix.setValue(h_min+1, x_min+2, z_min+1, (53,3))
 
 def generateLadder(h, x, z, matrix, orientation, h_min, ladder = (65,4), path = (44,11)):
 	if h < 1 or x < 1 or z < 1: return # filter crashes if not checked
@@ -330,13 +386,13 @@ def areSameBlocksList(block1, blocklist):
 	return False
 
 def getHouseAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):
-	house_size_x = x_max - x_min - 2
+	house_size_x = (x_max - x_min) - 2
 	if x_max-x_min > house_size_x:
 		x_mid = x_min + (x_max-x_min)/2
 		x_min = x_mid - house_size_x/2
 		x_max = x_mid + house_size_x/2
 
-	house_size_z = z_max - z_min - 2
+	house_size_z = (z_max - z_min) - 2
 	if z_max-z_min > house_size_z:
 		z_mid = z_min + (z_max-z_min)/2
 		z_min = z_mid - house_size_z/2

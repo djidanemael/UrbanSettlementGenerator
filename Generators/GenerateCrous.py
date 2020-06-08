@@ -121,7 +121,7 @@ def generateEntrance(h_min, x_min, x_max, z_min, z_max, matrix, house, orientati
 	z_mid = z_min + (z_max-z_min) // 2
 
 	if orientation == "N":
-		house.entranceLot = (h_min+1, house.lotArea.z_max, x_mid)
+		house.entranceLot = (h_min+1, x_mid, house.lotArea.z_max)
 		for z in range(z_max, house.lotArea.z_max):
 			matrix.setValue(h_min, x_mid-1, z, path)
 			matrix.setValue(h_min, x_mid, z, path)
@@ -141,7 +141,7 @@ def generateEntrance(h_min, x_min, x_max, z_min, z_max, matrix, house, orientati
 			matrix.setValue(h_min, x_min-2, z, path)
 
 	elif orientation == "S":
-		house.entranceLot = (h_min+1, house.lotArea.z_min, x_mid)
+		house.entranceLot = (h_min+1, x_mid, house.lotArea.z_min)
 		for z in range(house.lotArea.z_min, z_min):
 			matrix.setValue(h_min, x_mid-1, z, path)
 			matrix.setValue(h_min, x_mid, z, path)

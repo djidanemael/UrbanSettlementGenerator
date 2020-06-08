@@ -19,9 +19,10 @@ May 25th week:
 - Room orientation now checked before generation to avoid two rooms facing each other
 - Changed path generation so it is made on the side with the highest number of doors on the ground
 
-For the next week:
-- Fix missing ladders (see last screenshot)
-- Fix path appearing in the sky and not on the ground
-- Add other types of rooms and interior following orientation
+June 1st week:
+- Fixed new indoor ladders (did not use new orientation so it just generated them in front and so indoor)
+- Fixed path appearing in the sky and not on the ground (was made by bad entrance setting)
+- Added new interiors following orientation (bedroom, kitchen, living room, dining room, reading room)
+
+To do next:
 - Maybe improve already existing buildings by applying lego logic to appartments
-- And more

@@ -32,5 +32,9 @@ June 1st week:
 - Fixed path appearing in the sky and not on the ground (was made by bad entrance setting)
 - Added new interiors following orientation (bedroom, kitchen, living room, dining room, reading room)
 
+June 8th week:
+- Fixed multiple ladders on same rooms
+- Fixed windows
+
 To do next:
 - Maybe improve already existing buildings by applying lego logic to appartments

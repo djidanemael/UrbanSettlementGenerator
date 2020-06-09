@@ -1,3 +1,11 @@
+April 6th week:
+- 1st video meeting, the internship is about a competition on mcedit
+- We will make and use python scripts to generate worlds as we want.
+- For this week we have to understand the code and try to change something to make sure we understood.
+
+April 13th week:
+- First try on my own little structure, not working
+
 May 11th week:
 - Reworked the lego houses generation
 - Fixed ladder generation on front

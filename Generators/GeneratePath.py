@@ -1,4 +1,5 @@
 import logging
+from GenerateCrous import areSameBlocks
 
 air_like = [0, 6, 17, 18, 30, 31, 32, 37, 38, 39, 40, 59, 81, 83, 85, 104, 105, 106, 107, 111, 141, 142, 161, 162, 175, 78, 79, 99]
 ground_like = [1, 2, 3]
@@ -25,7 +26,7 @@ def getOrientation(x1, z1, x2, z2):
 def twoway_range(start, stop):
 	return range(start, stop+1, 1) if (start <= stop) else range(start, stop-1, -1)
 
-def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0), lamp=(123,0)):
+def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0), lamp=(124,0), redstone=(152,0)):
 	block = previous_block = path[0]
 	x = block[0]
 	z = block[1]
@@ -68,7 +69,7 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 		matrix.setValue(h,x,z,lamp if i%8==0 else pavementBlock)
 		fillUnderneath(matrix, h-1, x, z, pavementBlock)
 		fillAbove(matrix, h+1, x, z, 5)
-		if i%8==0: matrix.setValue(h-1,x,z,(152,0))
+		if i%8==0: matrix.setValue(h-1,x,z,redstone)
 
 		next_block = path[i+1]
 		next_h = height_map[next_block[0]][next_block[1]]
@@ -152,14 +153,37 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 
 		elif abs(h-next_h) == 1:
 			if h < next_h:
-				if orientation == "N":   stair = 3
-				elif orientation == "S": stair = 2
-				elif orientation == "E": stair = 0
-				elif orientation == "W": stair = 1
-				matrix.setValue(h+1, x, z,(67,stair))
+				matrix.setValue(h+1, x, z,(44,3))
+				if areSameBlocks(matrix.getValue(h, x, z), lamp):
+					matrix.setValue(h, x, z,pavementBlock)
+					matrix.setValue(h-1, x, z,baseBlock)
+					if orientation == "N":
+						matrix.setValue(h, x, z+1,lamp)
+						matrix.setValue(h-1, x, z+1,redstone)
+					elif orientation == "S":
+						matrix.setValue(h, x, z-1,lamp)
+						matrix.setValue(h-1, x, z-1,redstone)
+					elif orientation == "E":
+						matrix.setValue(h, x-1, z,lamp)
+						matrix.setValue(h-1, x-1, z,redstone)
+					elif orientation == "W":
+						matrix.setValue(h, x+1, z,lamp)
+						matrix.setValue(h-1, x+1, z,redstone)
+
 			elif h > next_h:
-				if orientation == "N":   stair = 2
-				elif orientation == "S": stair = 3
-				elif orientation == "E": stair = 1
-				elif orientation == "W": stair = 0
-				matrix.setValue(next_h+1, next_block[0], next_block[1], (67,stair))
+				matrix.setValue(next_h+1, next_block[0], next_block[1], (44,3))
+				if areSameBlocks(matrix.getValue(next_h, next_block[0], next_block[1]), lamp):
+					matrix.setValue(next_h, next_block[0], next_block[1], pavementBlock)
+					matrix.setValue(next_h-1, next_block[0], next_block[1], baseBlock)
+					if orientation == "N":
+						matrix.setValue(next_h, next_block[0], next_block[1]-1,lamp)
+						matrix.setValue(next_h-1, next_block[0], next_block[1]-1,redstone)
+					elif orientation == "S":
+						matrix.setValue(next_h, next_block[0], next_block[1]+1,lamp)
+						matrix.setValue(next_h-1, next_block[0], next_block[1]+1,redstone)
+					elif orientation == "E":
+						matrix.setValue(next_h, next_block[0]+1, next_block[1],lamp)
+						matrix.setValue(next_h-1, next_block[0]+1, next_block[1],redstone)
+					elif orientation == "W":
+						matrix.setValue(next_h, next_block[0]-1, next_block[1],lamp)
+						matrix.setValue(next_h-1, next_block[0]-1, next_block[1],redstone)

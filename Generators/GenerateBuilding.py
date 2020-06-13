@@ -6,6 +6,7 @@ from pymclevel import alphaMaterials, BoundingBox
 import utilityFunctions as utilityFunctions
 from GenerateObject import *
 from GenerateCarpet import generateCarpet
+from GenerateCrous import areSameBlocks
 
 def generateBuilding(matrix, h_min, h_max, x_min, x_max, z_min, z_max):
 
@@ -49,10 +50,12 @@ def generateBuilding(matrix, h_min, h_max, x_min, x_max, z_min, z_max):
 			matrix.setValue(h_min,door_x-1,z, (4,0))
 			matrix.setValue(h_min,door_x+1,z, (4,0))
 
+
 		# apartment windows
-		generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z_min)
+		#generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z_min)
 		# corridor windows
-		generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z_max)
+		#generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z_max)
+		generateWindows(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, z_max)
 		generateCorridorInterior(matrix, h_min, h_max, floor_size, x_min, x_max, z_max-6, z_max)
 		generateFloorPlan(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, z_max, wall)
 		
@@ -214,6 +217,23 @@ def generateDoor(matrix, y, x, z, door_up, door_down):
 	matrix.setValue(y+1, x, z, door_up)
 	matrix.setValue(y, x, z, door_down)
 
+def generateWindows(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, z_max):
+	if abs(x_max-x_min)+1 == 14:
+		generateSize14(matrix, h_min, h_max, floor_size, x_min, x_max, z_max, True)
+		generateSize14(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, False)
+	elif abs(x_max-x_min)+1 == 15:
+		generateSize15(matrix, h_min, h_max, floor_size, x_min, x_max, z_max, True)
+		generateSize15(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, False)
+	elif abs(x_max-x_min)+1 == 16:
+		generateSize16(matrix, h_min, h_max, floor_size, x_min, x_max, z_max, True)
+		generateSize16(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, False)
+	elif abs(x_max-x_min)+1 == 17:
+		generateSize17(matrix, h_min, h_max, floor_size, x_min, x_max, z_max, True)
+		generateSize17(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, False)
+	else:
+		generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z_min)
+		generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z_max)
+
 def generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z):
 	x_window_size = x_max-random.randint(x_min+2, x_max-2)
 
@@ -230,3 +250,146 @@ def generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_ma
 			matrix.setValue(window_h-1, x+1, z, (20,0))
 
 		cur_floor += floor_size
+
+def generateSize14(matrix, h_min, h_max, floor_size, x_min, x_max, z, front):
+	# windows
+	cur_floor = h_min+1
+	if front:
+		while cur_floor < h_max:
+			x = x_min+1
+			x = generateWindow(matrix, cur_floor, x, 3, z, front)
+			x = generateWindow(matrix, cur_floor, x, 4, z, front)
+			x = generateWindow(matrix, cur_floor, x, 3, z, front)
+
+			cur_floor += floor_size
+
+	else:
+		while cur_floor < h_max:
+			x = x_min+1
+			i = 1
+			big = False
+			while x < x_max:
+				if not big:
+					size = 3 if i==4 else random.randint(2, 4)
+					x = generateWindow(matrix, cur_floor, x, size, z, front)
+					big = (size == 3)
+				else:
+					x = generateWindow(matrix, cur_floor, x, 2, z, front)
+				i += 1
+
+			cur_floor += floor_size
+
+def generateSize15(matrix, h_min, h_max, floor_size, x_min, x_max, z, front):
+	# windows
+	cur_floor = h_min+1
+	if front:
+		while cur_floor < h_max:
+			x = x_min+1
+			x = generateWindow(matrix, cur_floor, x, 3, z, front)
+			x = generateWindow(matrix, cur_floor, x, 5, z, front)
+			x = generateWindow(matrix, cur_floor, x, 3, z, front)
+
+			cur_floor += floor_size
+
+	else:
+		while cur_floor < h_max:
+			x = x_min+1
+			i = 1
+			big = False
+			while x < x_max:
+				if not big:
+					size = 4 if i==4 else 2 if random.random() < 0.5 else 4
+					x = generateWindow(matrix, cur_floor, x, size, z, front)
+					big = (size == 4)
+				else:
+					x = generateWindow(matrix, cur_floor, x, 2, z, front)
+				i += 1
+
+			cur_floor += floor_size
+
+def generateSize16(matrix, h_min, h_max, floor_size, x_min, x_max, z, front):
+	# windows
+	cur_floor = h_min+1
+	if front:
+		while cur_floor < h_max:
+			x = x_min+1
+			x = generateWindow(matrix, cur_floor, x, 4, z, front)
+			x = generateWindow(matrix, cur_floor, x, 4, z, front)
+			x = generateWindow(matrix, cur_floor, x, 4, z, front)
+
+			cur_floor += floor_size
+
+	else:
+		while cur_floor < h_max:
+			x = x_min+1
+			i = 1
+			big = False
+			bigbig = False
+			while x < x_max:
+				if not big and not bigbig:
+					size = random.randint(3, 5) if i==3 else random.randint(2,5)
+					x = generateWindow(matrix, cur_floor, x, size, z, front)
+					big = (size == 3)
+					bigbig = (size == 4)
+				elif not big and bigbig:
+					size = 3 if i==4 else random.randint(2, 4)
+					x = generateWindow(matrix, cur_floor, x, size, z, front)
+					big = (size == 3)
+				elif big and not bigbig:
+					size = 4 if i==4 else 2 if random.random() < 0.5 else 4
+					x = generateWindow(matrix, cur_floor, x, size, z, front)
+					bigbig = (size == 4)
+				else:
+					x = generateWindow(matrix, cur_floor, x, 2, z, front)
+				i += 1
+
+			cur_floor += floor_size
+
+def generateSize17(matrix, h_min, h_max, floor_size, x_min, x_max, z, front):
+	# windows
+	cur_floor = h_min+1
+	if front:
+		while cur_floor < h_max:
+			x = x_min+1
+			x = generateWindow(matrix, cur_floor, x, 4, z, front)
+			x = generateWindow(matrix, cur_floor, x, 5, z, front)
+			x = generateWindow(matrix, cur_floor, x, 4, z, front)
+
+			cur_floor += floor_size
+
+	else:
+		while cur_floor < h_max:
+			x = x_min+1
+			i = 1
+			smol = False
+			bigbig = False
+			while x < x_max:
+				if not smol and not bigbig:
+					if i==3: size = 2 if random.random() < 0.5 else 4
+					else: 	 size = random.randint(2, 5)
+					x = generateWindow(matrix, cur_floor, x, size, z, front)
+					smol = (size == 2)
+					bigbig = (size == 4)
+				elif not smol and bigbig:
+					size = 2 if i==4 else random.randint(2, 4)
+					x = generateWindow(matrix, cur_floor, x, size, z, front)
+					smol = (size == 2)
+				elif smol and not bigbig:
+					size = 4 if i==4 else random.randint(3, 5)
+					x = generateWindow(matrix, cur_floor, x, size, z, front)
+					bigbig = (size == 4)
+				else:
+					x = generateWindow(matrix, cur_floor, x, 3, z, front)
+				i += 1
+
+			cur_floor += floor_size
+
+def generateWindow(matrix, h_min, x_min, x_size, z, front):
+	x = x_min
+	window_h = h_min+1 if front else h_min+3 if x_size==2 else h_min+2
+	while x < x_min+x_size:
+		for h in range(window_h, h_min+5):
+			if not areSameBlocks(matrix.getValue(h, x, z), (64,9)):
+				matrix.setValue(h, x, z, (20,0))
+		x += 1
+	return x+1

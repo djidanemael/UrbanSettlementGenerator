@@ -66,10 +66,9 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 		h = height_map[x][z]
 		#h = matrix.getMatrixY(h)
 
-		matrix.setValue(h,x,z,lamp if i%8==0 else pavementBlock)
+		matrix.setValue(h,x,z,pavementBlock)
 		fillUnderneath(matrix, h-1, x, z, pavementBlock)
 		fillAbove(matrix, h+1, x, z, 5)
-		if i%8==0: matrix.setValue(h-1,x,z,redstone)
 
 		next_block = path[i+1]
 		next_h = height_map[next_block[0]][next_block[1]]
@@ -112,6 +111,10 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 				#logging.info("Filling underneath at height {}".format(h-1))
 				fillUnderneath(matrix, h-1, x+1, z, pavementBlock)
 				fillAbove(matrix, h+1, x+1, z, 5)
+
+		if i%8==0:
+			matrix.setValue(h,x,z,lamp)
+			matrix.setValue(h-1,x,z,redstone)
 
 	# another iteration over the path to generate ladders
 	# this is to guarantee that fillAbove or any other

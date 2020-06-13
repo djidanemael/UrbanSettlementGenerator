@@ -417,7 +417,10 @@ def getHouseAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):
 		z_max = z_mid + house_size_z/2
 
 	crous_size_h = 3
-	h_max = h_min + crous_size_h * 20
+	tmp = h_min + crous_size_h * 20
+	while tmp > h_max:
+		tmp -= crous_size_h
+	h_max = tmp
 
 	return (h_min, h_max, x_min, x_max, z_min, z_max)
 

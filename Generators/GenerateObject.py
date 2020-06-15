@@ -56,10 +56,10 @@ def generateTorch(world, y, x, z, orientation):
 
 def generateChest(world, y, x, z, orientation):
 	if orientation == "N":
-		world.setValue(y+1, x, z, (54,2))
+		world.setEntity(y+1, x, z, (54,2), "chest")
 	elif orientation == "E":
-		world.setValue(y+1, x, z, (54,5))
+		world.setEntity(y+1, x, z, (54,5), "chest")
 	elif orientation == "S":
-		world.setValue(y+1, x, z, (54,3))
+		world.setEntity(y+1, x, z, (54,3), "chest")
 	elif orientation == "W":
-		world.setValue(y+1, x, z, (54,4))
+		world.setEntity(y+1, x, z, (54,4), "chest")

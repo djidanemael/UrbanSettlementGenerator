@@ -55,6 +55,7 @@ def generateBuilding(matrix, h_min, h_max, x_min, x_max, z_min, z_max):
 		
 		generateStairs(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, z_max, wall)
 		generateApartmentInterior(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, z_max-6)
+		generateRoofTop(matrix, h_max, x_min, x_max, z_min, z_max, wall)
 
 	return building
 
@@ -233,6 +234,36 @@ def generateWindows(matrix, h_min, h_max, floor_size, x_min, x_max, z_min, z_max
 	else:
 		generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z_min)
 		generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z_max)
+
+def generateRoofTop(matrix, h, x_min, x_max, z_min, z_max, wall):
+	for x in range(x_min, x_max+1):
+		matrix.setValue(h+1, x, z_min, (85,0))
+		matrix.setValue(h+1, x, z_max, (85,0))
+	for z in range(z_min, z_max+1):
+		matrix.setValue(h+1, x_min, z, (85,0))
+		matrix.setValue(h+1, x_max, z, (85,0))
+
+	block = matrix.getValue(h-8, x_max-2, z_max-2)
+	if isinstance(block, tuple): block = block[0]
+	if block == 0:
+		for y in range(h-7, h+1):
+			matrix.setValue(y, x_min+1, z_max-3, (65,5))
+		for y in range(h+1, h+4):
+			for x in range(x_min, x_min+3):
+				matrix.setValue(y, x, z_max-4, wall)
+				matrix.setValue(y, x, z_max-2, wall)
+			matrix.setValue(y, x_min, z_max-3, wall)
+		matrix.setValue(h+3, x_min+1, z_max-3, wall)
+
+	else:
+		for y in range(h-7, h+1):
+			matrix.setValue(y, x_max-1, z_max-3, (65,4))
+		for y in range(h+1, h+4):
+			for x in range(x_max-1, x_max+1):
+				matrix.setValue(y, x, z_max-4, wall)
+				matrix.setValue(y, x, z_max-2, wall)
+			matrix.setValue(y, x_max, z_max-3, wall)
+		matrix.setValue(h+3, x_max-1, z_max-3, wall)
 
 def generateBuildingWindows_AlongZ(matrix, h_min, h_max, floor_size, x_min, x_max, z):
 	x_window_size = x_max-random.randint(x_min+2, x_max-2)

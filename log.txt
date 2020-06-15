@@ -34,7 +34,7 @@ June 1st week:
 
 June 8th week:
 - Fixed multiple ladders on same rooms
-- Fixed windows
-
-To do next:
-- Maybe improve already existing buildings by applying lego logic to appartments
+- Fixed indoor windows
+- Added stairs and floor lamps to roads (stairs won't appear in some cases, lamps should be at even distances)
+- Added new windows layouts to buildings
+- Added barriers around buildings' rooftops and a ladder to go on there

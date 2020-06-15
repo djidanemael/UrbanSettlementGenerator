@@ -19,6 +19,10 @@ def generateCrous(matrix, h_min, h_max, x_min, x_max, z_min, z_max, ceiling = No
 
 	house.buildArea = utilityFunctions.dotdict({"y_min": h_min, "y_max": h_max, "x_min": x_min, "x_max": x_max, "z_min": z_min, "z_max": z_max})
 	
+	# does not create the house if not enough space is given
+	if abs(x_max-x_min) < room_size or abs(z_max-z_min) < room_size or abs(h_max-h_min) < 3:
+		return
+
 	logging.info("Generating lego house at area {}".format(house.lotArea))
 	logging.info("Construction area {}".format(house.buildArea))
 
@@ -219,20 +223,6 @@ def possible_rooms(x_min, x_max, z_min, z_max, room_size):
 def nb_rooms(possible_rooms_x, possible_rooms_z):
 	return (RNG.randint(1, possible_rooms_x), RNG.randint(1, possible_rooms_z))
 
-def fenceWood(w):
-	if w == (5, 1):
-		return (188,0)
-	elif w == (5, 2):
-		return (189,0)
-	elif w == (5, 3):
-		return (190,0)
-	elif w == (5, 4):
-		return (192,0)
-	elif w == (5, 5):
-		return (191,0)
-	else:
-		return (85,0)
-
 def generateBedroom(h_min, h_max, x_min, x_max, z_min, z_max, matrix, orientation):
 	if orientation == "N":
 		generateBedNew(matrix, h_min, x_max-1, z_max-1, orientation)
@@ -416,12 +406,6 @@ def getHouseAreaInsideLot(h_min, h_max, x_min, x_max, z_min, z_max):
 		z_min = z_mid - house_size_z/2
 		z_max = z_mid + house_size_z/2
 
-	crous_size_h = 3
-	tmp = h_min + crous_size_h * 20
-	while tmp > h_max:
-		tmp -= crous_size_h
-	h_max = tmp
-
 	return (h_min, h_max, x_min, x_max, z_min, z_max)
 
 def getBuildArea(h_min, h_max, x_min, x_max, z_min, z_max, room_size):
@@ -442,9 +426,12 @@ def getBuildArea(h_min, h_max, x_min, x_max, z_min, z_max, room_size):
 		z_max = z_mid + house_size_z/2
 
 	crous_size_h = 3
-	h_max = h_min + crous_size_h * 20
+	tmp = h_min + crous_size_h * 20
+	while tmp >= h_max-crous_size_h:
+		tmp -= crous_size_h
+	h_max = tmp
 
-	return (h_min, h_max, x_min, x_max, z_min, z_max)	
+	return (h_min, h_max, x_min, x_max, z_min, z_max)
 
 def orientation():
 	oris = ["N", "E", "S", "W"]

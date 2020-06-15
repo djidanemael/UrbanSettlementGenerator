@@ -162,7 +162,7 @@ def perform(level, box, options):
 			logging.info("\t{}".format(p))
 
 	for partition in final_partitioning:
-		house = generateCrous(world, partition, height_map)
+		house = generateHouse(world, partition, height_map)
 		all_buildings.append(house)
 
 	# ==== GENERATE PATH MAP  ====
@@ -227,7 +227,7 @@ def generateHouse(matrix, p, height_map):
 			line += str(height_map[x][z])+" "
 		logging.info(line)
 
-	if RNG.random() < 0.5:
+	if RNG.random() < 0.4:
 		house = GenerateHouse.generateHouse(matrix, h, p[1],p[2],p[3], p[4], p[5])
 	else:
 		house = GenerateCrous.generateCrous(matrix, h, p[1], p[2], p[3], p[4], p[5])

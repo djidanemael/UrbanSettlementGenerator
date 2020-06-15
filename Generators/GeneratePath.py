@@ -64,7 +64,7 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 		x = block[0]
 		z = block[1]
 		h = height_map[x][z]
-		#h = matrix.getMatrixY(h)
+		h = matrix.getMatrixY(h)
 
 		matrix.setValue(h,x,z,pavementBlock)
 		fillUnderneath(matrix, h-1, x, z, pavementBlock)
@@ -112,10 +112,6 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 				fillUnderneath(matrix, h-1, x+1, z, pavementBlock)
 				fillAbove(matrix, h+1, x+1, z, 5)
 
-		if i%8==0:
-			matrix.setValue(h,x,z,lamp)
-			matrix.setValue(h-1,x,z,redstone)
-
 	# another iteration over the path to generate ladders
 	# this is to guarantee that fillAbove or any other
 	# manipulations of the environment around the path
@@ -125,8 +121,8 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 		block = path[i]
 		x = block[0]
 		z = block[1]
-		#h = 100
 		h = height_map[x][z]
+		h = matrix.getMatrixY(h)
 
 		next_block = path[i+1]
 		next_h = height_map[next_block[0]][next_block[1]]
@@ -154,7 +150,34 @@ def generatPath(matrix, path, height_map, pavementBlock = (4,0), baseBlock=(2,0)
 					# are cobblestone and not dirt, etc
 					matrix.setValue(ladder_h, x, z, (pavementBlock))
 
-		elif abs(h-next_h) == 1:
+	# another iteration to add floor lamps
+	for i in range(0, len(path)-1):
+		block = path[i]
+		x = block[0]
+		z = block[1]
+		h = height_map[x][z]
+		h = matrix.getMatrixY(h)
+
+		if i%8==0:
+			matrix.setValue(h,x,z,lamp)
+			matrix.setValue(h-1,x,z,redstone)
+
+	# final iteration to add simple stairs when height changes
+	# by one block
+	# also checks if there is a lamp to move it if so
+	for i in range(0, len(path)-1):
+
+		block = path[i]
+		x = block[0]
+		z = block[1]
+		h = height_map[x][z]
+		h = matrix.getMatrixY(h)
+
+		next_block = path[i+1]
+		next_h = height_map[next_block[0]][next_block[1]]
+
+		orientation = getOrientation(x, z, next_block[0], next_block[1])
+		if abs(h-next_h) == 1:
 			if h < next_h:
 				matrix.setValue(h+1, x, z,(44,3))
 				if areSameBlocks(matrix.getValue(h, x, z), lamp):

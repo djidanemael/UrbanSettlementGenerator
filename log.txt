@@ -6,6 +6,20 @@ April 6th week:
 April 13th week:
 - First try on my own little structure, not working
 
+April 20th week:
+- Got it working
+- It is a small apartment 4 blocks wide, 5 blocks deep, 3 blocks high
+- It has a door and a window on front, a bed, a chest, a table and a torch inside
+
+April 27th week:
+- Corrected path generation
+- Added multiple floors
+
+May 4th week:
+- Added a ladder to reach higher rooms
+- Added the small path in front of rooms to not fall, should be better to access them
+- Added the possibility to the house to be of 2 rooms wide
+
 May 11th week:
 - Reworked the lego houses generation
 - Fixed ladder generation on front

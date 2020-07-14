@@ -249,7 +249,7 @@ def generateRoofTop(matrix, h, x_min, x_max, z_min, z_max, wall):
 		for y in range(h-7, h+1):
 			matrix.setValue(y, x_min+1, z_max-3, (65,5))
 		for y in range(h+1, h+4):
-			for x in range(x_min, x_min+3):
+			for x in range(x_min, x_min+2):
 				matrix.setValue(y, x, z_max-4, wall)
 				matrix.setValue(y, x, z_max-2, wall)
 			matrix.setValue(y, x_min, z_max-3, wall)
